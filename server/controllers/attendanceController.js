@@ -39,6 +39,10 @@ pool.getConnection((err, connection) => {
     "INSERT INTO attendance_records SET employeeID = ?, attendance_type = '1', attendance_dt = NOW()",
     [e_ID],
     (err, rows) => {
+
+      connection.query(
+        "SELECT * FROM attendance_records ORDER BY employeeID DESC LIMIT 1",
+        (err, rows) => {
       //When done with connection, release it
       connection.release();
 
@@ -46,11 +50,12 @@ pool.getConnection((err, connection) => {
         res.render("attendancerecord", {alert: "Attendance added successfully!" });
 
       } else {
-        console.log("Error loading the data.");
+        console.log("Error loading the data.", rows);
       }
       console.log(e_ID);
     }
   );
+});
 });
 };
 
