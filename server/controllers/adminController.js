@@ -179,7 +179,7 @@ exports.updateEmployee = (req, res) => {
   });
 };
 
-// Delete a teacher
+
 exports.deleteEmployee = (req, res) => {
   //res.render('edit-teacher');
   console.log("Going to delete a employee.");

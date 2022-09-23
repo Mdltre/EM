@@ -37,4 +37,23 @@ VALUES (NULL, 00009, 'Brunson', 'Martin', 'none', '09763827156', 'Blk. 16 Lot 2,
 INSERT INTO employees (employeeID, employeeCode, employeeLastname, employeeFirstname, employeeSuffix, employeePhone, employeeAddress, employeePosition, employeeUsername, employeePassword, employeeStatus) 
 VALUES (NULL, 000010, 'Moon', 'Robert', 'none', '09234156725', 'Blk. 16 Lot 2, Rosalina 3 Village, Baliok, Talomo District, Davao City', 'Cashier', 'rmoon', 'compshop', 'active');
 
+CREATE TABLE attendance_records(
+attendanceID INT(11) PRIMARY KEY AUTO_INCREMENT,
+employeeID INT(11),
+attendance_type BOOLEAN,
+attendance_dt DATETIME
+)ENGINE=INNODB;
+
+INSERT INTO attendance_records (attendanceID, employeeID, attendance_type, attendance_dt)
+VALUES (NULL, 00001, '1',NOW());
+INSERT INTO attendance_records (attendanceID, employeeID, attendance_type, attendance_dt)
+VALUES (NULL, 00001, '0',NOW());
+
+DELETE FROM attendance_records WHERE attendanceID = 3;
+
 SELECT * FROM em_db.employees;
+SELECT * FROM attendance_records;
+
+SELECT * FROM attendance_records WHERE employeeID = 1 ORDER BY attendance_dt DESC LIMIT 1;
+
+

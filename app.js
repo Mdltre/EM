@@ -42,6 +42,8 @@ const employeeroutes = require('./server/routes/employee');
 app.use('/', employeeroutes);
 const adminroutes = require('./server/routes/admin');
 app.use('/', adminroutes);
+const attendanceroutes = require('./server/routes/attendance');
+app.use('/', attendanceroutes);
 
 const connection = mysql.createConnection({
 	host     : 'localhost',
@@ -63,6 +65,10 @@ app.use(express.static(path.join(__dirname, 'static')));
 app.get('/', function(request, response) {
 	// Render login template
 	response.sendFile(path.join(__dirname + '/views/login.html'));
+});
+
+app.get('/attendance', function(request, response){
+	response.render("attendancerecord");
 });
 
 // http://localhost:3000/auth
