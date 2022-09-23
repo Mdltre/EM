@@ -50,7 +50,7 @@ pool.getConnection((err, connection) => {
         console.log("Error loading the data.");
       }
       console.log(e_ID);
-      console.log("I added the attendance to your database.");
+      console.log("*");
     }
   );
 });
@@ -79,7 +79,7 @@ exports.TimeOut = (req,res) => {
           console.log("Error loading the data.");
         }
   
-        console.log("I added the attendance to your database.");
+        console.log("*");
       }
     );
   });
