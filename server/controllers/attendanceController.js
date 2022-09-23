@@ -24,7 +24,6 @@ exports.AttendancePage = (req,res) => {
       }
     });
   });
-    console.log("In attendance records.")
 };
 
 exports.TimeIn = (req,res) => {
@@ -50,7 +49,6 @@ pool.getConnection((err, connection) => {
         console.log("Error loading the data.");
       }
       console.log(e_ID);
-      console.log("*");
     }
   );
 });
@@ -79,7 +77,6 @@ exports.TimeOut = (req,res) => {
           console.log("Error loading the data.");
         }
   
-        console.log("*");
       }
     );
   });
