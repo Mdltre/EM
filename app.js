@@ -6,6 +6,8 @@ const session = require('express-session');
 const path = require('path');
 require('dotenv').config();
 
+var sess;
+
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -96,6 +98,7 @@ app.post('/auth', function(request, response) {
 						// true logic
 						response.redirect('/adminhome');
 						console.log(request.session);
+						app.locals.sess= request.session.loggedin;
 					  }
 					  else
 					  {
@@ -144,6 +147,7 @@ app.get('/employee/home', function(request, response) {
 
 app.get('/logout',function(req, res){
 	req.session.destroy(function(){
+		app.locals.sess= false;
 	  res.redirect('/');
 	  console.log("out.");
 	});

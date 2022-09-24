@@ -1,4 +1,6 @@
 const mysql = require("mysql");
+const session = require('express-session');
+const path = require('path');
 
 //Connection Port
 const pool = mysql.createPool({
@@ -11,8 +13,17 @@ const pool = mysql.createPool({
 
 //main home page
 exports.adminHome = (req,res) => {
-  res.render("adminhome");
+
+  var sess= req.app.locals.sess;
+
+  if (sess==true) {
+		// Output username
+    res.render("adminhome");
   console.log("You're in the main admin page.");
+	} else {
+		// Not logged in
+		res.send('Please login to view this page!');
+	}
 };
 
 //View Employees
