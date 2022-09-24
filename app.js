@@ -95,6 +95,7 @@ app.post('/auth', function(request, response) {
 					  if (result != "") {
 						// true logic
 						response.redirect('/adminhome');
+						console.log(request.session);
 					  }
 					  else
 					  {
@@ -124,6 +125,19 @@ app.get('/adminhome', function(request, response) {
 	} else {
 		// Not logged in
 		response.send('Please login to view this page!');
+	}
+	response.end();
+});
+
+app.get('/employee/home', function(request, response) {
+	// If the user is loggedin
+	if (request.session.loggedin) {
+		// Output username
+		response.send('Welcome back, ' + request.session.username + '!');
+	} else {
+		// Not logged in
+		response.send('Please login to view this page!');
+		console.log("not logged in.");
 	}
 	response.end();
 });
