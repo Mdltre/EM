@@ -119,32 +119,6 @@ app.post('/auth', function(request, response) {
 	}
 });
 
-// http://localhost:3000/home
-app.get('/adminhome', function(request, response) {
-	// If the user is loggedin
-	if (request.session.loggedin) {
-		// Output username
-		response.send('Welcome back, ' + request.session.username + '!');
-	} else {
-		// Not logged in
-		response.send('Please login to view this page!');
-	}
-	response.end();
-});
-
-app.get('/employee/home', function(request, response) {
-	// If the user is loggedin
-	if (request.session.loggedin) {
-		// Output username
-		response.send('Welcome back, ' + request.session.username + '!');
-	} else {
-		// Not logged in
-		response.send('Please login to view this page!');
-		console.log("not logged in.");
-	}
-	response.end();
-});
-
 app.get('/logout',function(req, res){
 	req.session.destroy(function(){
 		app.locals.sess= false;
