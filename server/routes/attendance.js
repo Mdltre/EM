@@ -4,8 +4,6 @@ const attendanceController = require('../controllers/attendanceController');
 
 router.get('/attendance', attendanceController.AttendancePage);
 
-router.post('/attendance/timein', attendanceController.TimeIn);
-
-router.post('/attendance/timeout', attendanceController.TimeOut);
+router.post('/attendance/timein', attendanceController.TimeInOut);
 
 module.exports = router;
