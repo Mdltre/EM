@@ -11,33 +11,53 @@ const pool = mysql.createPool({
 
 //main home page
 exports.mainHome = (req,res) => {
+
+  var sess= req.app.locals.sess;
+
+if (sess==true) {
+  // Output username
   res.render("mainhome");
   console.log("You're in the main page.");
+} else {
+  // Not logged in
+  res.send('Please login to view this page!');
+}
 };
 
 //View Employees
 exports.view = (req, res) => {
 
-  //Connect to DB
-  pool.getConnection((err, connection) => {
-    if (err) throw err;
-    console.log("Employee database is connected.");
+  var sess= req.app.locals.sess;
 
-    connection.query('SELECT * FROM employees', (err, rows)=> {
-      connection.release();
-
-      if(!err){
-        res.render('employeelist', {rows});
-      } else {
-        console.log(err);
-      }
+if (sess==true) {
+    //Connect to DB
+    pool.getConnection((err, connection) => {
+      if (err) throw err;
+      console.log("Employee database is connected.");
+  
+      connection.query('SELECT * FROM employees', (err, rows)=> {
+        connection.release();
+  
+        if(!err){
+          res.render('employeelist', {rows});
+        } else {
+          console.log(err);
+        }
+      });
     });
-  });
+} else {
+  // Not logged in
+  res.send('Please login to view this page!');
+}
 };
 
 //Search Employees
 exports.find = (req, res) => {
 
+    var sess= req.app.locals.sess;
+
+if (sess==true) {
+  
     //Connect to DB
     pool.getConnection((err, connection) => {
       if (err) throw err;
@@ -58,4 +78,8 @@ exports.find = (req, res) => {
       }
       );
     });
+} else {
+  // Not logged in
+  res.send('Please login to view this page!');
+}
 };

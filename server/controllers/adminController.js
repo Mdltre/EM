@@ -29,21 +29,28 @@ exports.adminHome = (req,res) => {
 //View Employees
 exports.view = (req, res) => {
 
-    //Connect to DB
-    pool.getConnection((err, connection) => {
-      if (err) throw err;
-      console.log("Employee database is connected.");
-  
-      connection.query('SELECT * FROM employees', (err, rows)=> {
-        connection.release();
-  
-        if(!err){
-          res.render('adminmanage', {rows});
-        } else {
-          console.log(err);
-        }
+    var sess= req.app.locals.sess;
+
+    if (sess==true) {
+      // Output username
+      pool.getConnection((err, connection) => {
+        if (err) throw err;
+        console.log("Employee database is connected.");
+    
+        connection.query('SELECT * FROM employees', (err, rows)=> {
+          connection.release();
+    
+          if(!err){
+            res.render('adminmanage', {rows});
+          } else {
+            console.log(err);
+          }
+        });
       });
-    });
+    } else {
+      // Not logged in
+      res.send('Please login to view this page!');
+    }
   };
   
   //Search Employees
@@ -73,14 +80,26 @@ exports.view = (req, res) => {
 
   //Go to add an employee
   exports.employeeform = (req, res) => {
-    res.render("addemployee");
-    console.log("Going to Add Employee page.");
+
+    var sess= req.app.locals.sess;
+
+if (sess==true) {
+  // Output username
+  res.render("addemployee");
+  console.log("Going to Add Employee page.");
+} else {
+  // Not logged in
+  res.send('Please login to view this page!');
+}
   };
 
   // Add new employee
 exports.createEmployee = (req, res) => {
   //res.render('addemployee');
 
+  var sess= req.app.locals.sess;
+
+if (sess==true) {
   pool.getConnection((err, connection) => {
     const { e_code, e_lastname, e_firstname, e_suffix, e_phone, e_address, e_position, e_username, e_password, e_status } = req.body;
 
@@ -106,11 +125,19 @@ exports.createEmployee = (req, res) => {
       }
     );
   });
+} else {
+  // Not logged in
+  res.send('Please login to view this page!');
+}
 };
 
 // place details to Edit teacher
 exports.editEmployee = (req, res) => {
   //res.render('edit-teacher');
+  var sess= req.app.locals.sess;
+
+if (sess==true) {
+  // Output username
   console.log("Going to edit an employee.");
 
   //Connect to DB
@@ -136,63 +163,81 @@ exports.editEmployee = (req, res) => {
       }
     );
   });
+} else {
+  // Not logged in
+  res.send('Please login to view this page!');
+}
 };
 
 // Update employee details
 exports.updateEmployee = (req, res) => {
   //res.render('edit-teacher');
-  const { e_code, e_lastname, e_firstname, e_suffix, e_phone, e_address, e_position, e_username, e_password, e_status } = req.body;
+  var sess= req.app.locals.sess;
 
-  console.log("Got the employee. Going to update their details.");
+  if (sess==true) {
+    // Output username
+    const { e_code, e_lastname, e_firstname, e_suffix, e_phone, e_address, e_position, e_username, e_password, e_status } = req.body;
 
-  //Connect to DB
-  pool.getConnection((err, connection) => {
-    if (err) throw err; //not connected
-    console.log("*");
-
-    // Connect Employee
-    connection.query(
-      "UPDATE employees SET employeeCode = ?, employeeLastname = ?, employeeFirstname = ?, employeeSuffix = ?, employeePhone = ?, employeeAddress = ?, employeePosition = ?, employeeUsername = ?, employeePassword = ?, employeeStatus = ? WHERE employeeID = ?",
-      [e_code, e_lastname, e_firstname, e_suffix, e_phone, e_address, e_position, e_username, e_password, e_status, req.params.id],
-      (err, rows) => {
-        //When done with connection, release it
-        connection.release();
-
-        if (!err) {
-
-          pool.getConnection((err, connection) => {
-            if (err) throw err; //not connected
-
-            // Connect Employee
-            connection.query(
-              "SELECT * FROM employees WHERE employeeID = ?",
-              [req.params.id],
-              (err, rows) => {
-                //When done with connection, release it
-                connection.release();
-                if (!err) {
-                  res.render("editemployee", { rows, alert: `${e_lastname} has been updated!` });
-                } else {
-                  console.log("Error loading the data.");
+    console.log("Got the employee. Going to update their details.");
+  
+    //Connect to DB
+    pool.getConnection((err, connection) => {
+      if (err) throw err; //not connected
+      console.log("*");
+  
+      // Connect Employee
+      connection.query(
+        "UPDATE employees SET employeeCode = ?, employeeLastname = ?, employeeFirstname = ?, employeeSuffix = ?, employeePhone = ?, employeeAddress = ?, employeePosition = ?, employeeUsername = ?, employeePassword = ?, employeeStatus = ? WHERE employeeID = ?",
+        [e_code, e_lastname, e_firstname, e_suffix, e_phone, e_address, e_position, e_username, e_password, e_status, req.params.id],
+        (err, rows) => {
+          //When done with connection, release it
+          connection.release();
+  
+          if (!err) {
+  
+            pool.getConnection((err, connection) => {
+              if (err) throw err; //not connected
+  
+              // Connect Employee
+              connection.query(
+                "SELECT * FROM employees WHERE employeeID = ?",
+                [req.params.id],
+                (err, rows) => {
+                  //When done with connection, release it
+                  connection.release();
+                  if (!err) {
+                    res.render("editemployee", { rows, alert: `${e_lastname} has been updated!` });
+                  } else {
+                    console.log("Error loading the data.");
+                  }
+  
+                  console.log("Updating employee successful.");
                 }
-
-                console.log("Updating employee successful.");
-              }
-            );
-          });
-        } else {
-          console.log("Error loading the data.");
+              );
+            });
+          } else {
+            console.log("Error loading the data.");
+          }
+  
+          console.log("*");
         }
+      );
+    });
+  } else {
+    // Not logged in
+    res.send('Please login to view this page!');
+  }
 
-        console.log("*");
-      }
-    );
-  });
 };
 
 
 exports.deleteEmployee = (req, res) => {
   //res.render('edit-teacher');
+
+  var sess= req.app.locals.sess;
+
+if (sess==true) {
+  // Output username
   console.log("Going to delete a employee.");
 
   //Connect to DB
@@ -218,4 +263,8 @@ exports.deleteEmployee = (req, res) => {
       }
     );
   });
+} else {
+  // Not logged in
+  res.send('Please login to view this page!');
+}
 };
