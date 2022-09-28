@@ -104,6 +104,8 @@ app.post('/auth', function(request, response) {
 					  {
 						// false logic
 						response.redirect('/employee/home');
+						console.log(request.session);
+						app.locals.sess= request.session.loggedin;
 					  }
 					});
 				  });
