@@ -40,51 +40,46 @@ pool.getConnection((err, connection) => {
         console.log("Result: " + result);
         if (result != "") {
         // true logic
-          var timeinout = "SELECT * FROM attendance_records WHERE employeeID = '"+e_ID+"'"
+          var timeinout = "SELECT attendance_type FROM attendance_records WHERE employeeID = '"+e_ID+"' AND DATE(attendance_dt) = curdate() ORDER BY attendance_dt DESC LIMIT 1"
           connection.query(timeinout, function (err,result){
-            console.log("TimeInOut Result: " + result);
-            if (result.length % 2 == 0){
-              connection.query(
-                "INSERT INTO attendance_records SET employeeID = ?, attendance_type = '1', attendance_dt = NOW()",
-                [e_ID],
-                (err, rows) => {
-            
-                  connection.query(
-                    "SELECT * FROM attendance_records ORDER BY employeeID DESC LIMIT 1",
-                    (err, rows) => {
-                  //When done with connection, release it
-                  connection.release();
-            
-                  if (!err) {
-                    res.render("attendancerecord", {alert: "Attendance added successfully!" });
-                  } else {
-                    console.log("Error loading the data.", rows);
-                  }
-                  console.log(e_ID);
-                }
-              );
-            });
-            }else{
+            var db_attype = JSON.stringify(result);
+            var cond = '[{"attendance_type":1}]';
+            console.log(db_attype);
+            console.log(cond);
+            if (db_attype === cond){
               connection.query(
                 "INSERT INTO attendance_records SET employeeID = ?, attendance_type = '0', attendance_dt = NOW()",
                 [e_ID],
                 (err, rows) => {
-            
-                  connection.query(
-                    "SELECT * FROM attendance_records ORDER BY employeeID DESC LIMIT 1",
-                    (err, rows) => {
                   //When done with connection, release it
                   connection.release();
             
                   if (!err) {
-                    res.render("attendancerecord", {alert: "Attendance added successfully!" });
+                    res.redirect("/attendance");
                   } else {
                     console.log("Error loading the data.", rows);
                   }
                   console.log(e_ID);
                 }
-              );
-            });
+
+            );
+            }else{
+              connection.query(
+                "INSERT INTO attendance_records SET employeeID = ?, attendance_type = '1', attendance_dt = NOW()",
+                [e_ID],
+                (err, rows) => {
+                  //When done with connection, release it
+                  connection.release();
+            
+                  if (!err) {
+                    res.redirect("/attendance");
+                  } else {
+                    console.log("Error loading the data.", rows);
+                  }
+                  console.log(e_ID);
+                }
+
+            );
             }
           })
         }
